@@ -1,0 +1,13 @@
+current directory: /Users/nagamitakaaki/working_directory/Ruby_Working_Directory/speachGoogleHomeTwitter/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+/Users/nagamitakaaki/.rbenv/versions/2.4.1/bin/ruby -r ./siteconf20180120-2612-1c347ic.rb extconf.rb
+creating Makefile
+
+current directory: /Users/nagamitakaaki/working_directory/Ruby_Working_Directory/speachGoogleHomeTwitter/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/nagamitakaaki/working_directory/Ruby_Working_Directory/speachGoogleHomeTwitter/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/nagamitakaaki/working_directory/Ruby_Working_Directory/speachGoogleHomeTwitter/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" install
