@@ -20,7 +20,7 @@ post '/login' do
   return hash.to_json
 end
 
-get '/webhook' do
+post '/webhook' do
 
   hash = {
              speech: "こんにちは、こちらはサーバプログラムです。"
