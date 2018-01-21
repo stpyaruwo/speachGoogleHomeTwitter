@@ -31,11 +31,7 @@ post '/webhook' do
   #keywordにオブジェクトが代入されてる場合
   if keyword != nil
       hash = {
-<<<<<<< HEAD
             speech: "#{keyword}とおっしゃいましたよね!"
-=======
-            speech: "#{foo}とおっしゃいましたよね!"
->>>>>>> a89bdc44d7f0b1a4282b948d677a7f99ae8361f6
       }
   else
       hash = {
