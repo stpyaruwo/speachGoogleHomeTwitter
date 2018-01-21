@@ -3,6 +3,8 @@ require "bundler/setup"
 require 'sinatra'
 require "json"
 
+set :environment, :production #外部接続のためのコード
+
 #postのテスト①
 get '/' do
   erb :input_form
@@ -20,7 +22,7 @@ post '/login' do
   return hash.to_json
 end
 
-get '/webhook' do
+post '/webhook' do
 
   hash = {
              speech: "こんにちは、こちらはサーバプログラムです。"
