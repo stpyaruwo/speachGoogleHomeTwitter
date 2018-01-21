@@ -2,44 +2,59 @@ require "rubygems"
 require "bundler/setup"
 require 'sinatra'
 require "json"
+require "twitter"
+
+require_relative "TwitterReader"
 
 set :environment, :production #外部接続のためのコード
 
-#postのテスト①
-get '/' do
-  erb :input_form
-end
+class Main < Sinatra::Base
 
-#postのテスト②
-post '/login' do
-  login_name = params[:login]
-  password = params[:pass]
+  include TwitterRead #TwitterReaderのモジュールをinclude
 
-  hash = {
-             login_info: "こんにちは、#{login_name}さん パスワードは#{password}"
+    #postのテスト②
+      get '/' do
+        erb :input_form
+      end
 
-           }
-  return hash.to_json
-end
+      #postのテスト②
+      post '/login' do
+        login_name = params[:login]
+        password = params[:pass]
 
-post '/webhook' do
+        hash = {
+                   login_info: "こんにちは、#{login_name}さん パスワードは#{password}"
 
-  #JSONパラメータを読み込む
-  obj = JSON.parse(request.body.read)
-  keyword = obj["result"]["parameters"]["keyword"]
+                 }
+        return hash.to_json
+      end
 
-  #keywordにオブジェクトが代入されてる場合
-  if keyword != nil
-      hash = {
-            speech: "#{keyword}とおっしゃいましたよね!"
-      }
-  else
-      hash = {
-              speech: "こんにちは、こちらはサーバプログラムです。atsushiさん"
+      post '/webhook' do
 
-          }
-  end
+        #JSONパラメータを読み込む
+        obj = JSON.parse(request.body.read)
+        keyword = obj["result"]["parameters"]["keyword"]
 
-  return hash.to_json
+        #keywordにオブジェクトが代入されてる場合
+        if keyword != nil
+            hash = {
+                  speech: "#{keyword}とおっしゃいましたよね!"
+            }
+        else
+            hash = {
+                    speech: "こんにちは、こちらはサーバプログラムです。atsushiさん"
 
+                }
+        end
+        return hash.to_json
+      end
+
+      #Twitterのテスト
+      get '/twitterTest' do
+        twitterread = TwitterRead::TwitterReader.new
+        @read = twitterread.readtweet
+        erb :readtwitter
+      end
+
+      run!
 end
