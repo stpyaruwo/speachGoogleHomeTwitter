@@ -44,13 +44,17 @@ class Main < Sinatra::Base
         obj = JSON.parse(request.body.read)
 
         #②リクエストの内容によって処理を変える
-        #intentに処理の分岐条件
         intent = obj["result"]["parameters"]["intent"]
 
         case intent
         when "callme" then
             settings.postdialog = {
-                 speech: "#{obj["result"]["parameters"]["keyword"]}とおっしゃいましたね!"
+                  speech: "#{obj["result"]["parameters"]["keyword"]}とおっしゃいましたね!"
+            }
+        when "webhook" then
+            t = Time.new
+            settings.postdialog = {
+                  speech: "#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております。あつしさん!"
             }
         else
             settings.postdialog = {
