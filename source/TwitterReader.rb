@@ -14,8 +14,7 @@ module TwitterRead
 
       #ツイートの読み込み(homeline上の3件分)
       def readtweet
-        
-          #Arrayを返す
+          #タイムラインを返却する <= Array
           return @client.home_timeline( { count: 3} )
       end
   end

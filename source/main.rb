@@ -8,13 +8,21 @@ require_relative "TwitterReader"
 
 set :environment, :production #外部接続のためのコード
 
+#sinnatraを継承し、使用する
 class Main < Sinatra::Base
 
   include TwitterRead #TwitterReaderのモジュールをinclude
 
+    #settings.変数名　で呼び出すことができる
+    configure do
+      set :twitterread, TwitterReader.new
+      set :postdialog, Hash.new
+    end
+
+
     #postのテスト②
       get '/' do
-        erb :input_form
+        "Hello"
       end
 
       #postのテスト②
@@ -29,30 +37,34 @@ class Main < Sinatra::Base
         return hash.to_json
       end
 
+      #DialogFlowからのpost
       post '/webhook' do
 
-        #JSONパラメータを読み込む
+        #①DialogFlowからjsonリクエストを受け取る
         obj = JSON.parse(request.body.read)
-        keyword = obj["result"]["parameters"]["keyword"]
 
-        #keywordにオブジェクトが代入されてる場合
-        if keyword != nil
-            hash = {
-                  speech: "#{keyword}とおっしゃいましたよね!"
+        #②リクエストの内容によって処理を変える
+        #intentに処理の分岐条件
+        intent = obj["result"]["parameters"]["intent"]
+
+        case intent
+        when "callme" then
+            settings.postdialog = {
+                 speech: "#{obj["result"]["parameters"]["keyword"]}とおっしゃいましたね!"
             }
         else
-            hash = {
-                    speech: "こんにちは、こちらはサーバプログラムです。atsushiさん"
-
-                }
+            settings.postdialog = {
+                  speech: "全てにヒットしませんでした"
+            }
         end
-        return hash.to_json
+
+        #③DialogFlowに返す
+        return settings.postdialog.to_json
       end
 
       #Twitterのテスト
       get '/twitterTest' do
-        twitterread = TwitterRead::TwitterReader.new
-        @read = twitterread.readtweet
+        @read = settings.twitterread.readtweet
         erb :readtwitter
       end
 
