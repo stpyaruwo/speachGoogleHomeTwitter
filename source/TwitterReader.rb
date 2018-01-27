@@ -18,7 +18,7 @@ module TwitterRead
       def readtweet(tweets_num)
           #tweetsに数字が入っているかチェックする
 
-          if tweets_num =~ /^[0-9]+$/
+          if tweets_num.kind_of?(Integer)
               #ツイートを配列で受け取る
               tweets = @client.home_timeline( { count: tweets_num} )
               says = "はい！、#{tweets.count}件分のツイートを呼び込みます！"
