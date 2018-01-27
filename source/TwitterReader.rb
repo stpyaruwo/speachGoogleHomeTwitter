@@ -17,6 +17,7 @@ module TwitterRead
       #ツイートの読み込み(homeline)
       def readtweet(tweets_num)
           #tweetsに数字が入っているかチェックする
+             tweets_num = tweets_num.to_i
 
           if tweets_num.kind_of?(Integer)
               #ツイートを配列で受け取る
