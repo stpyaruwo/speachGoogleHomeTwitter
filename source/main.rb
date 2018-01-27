@@ -64,7 +64,6 @@ class Main < Sinatra::Base
           #ホームラインラインから、指定された数字まで、取得する
               settings.postdialog  = settings.twitterread.readtweet(tweets_num)
         else
-
             settings.postdialog = {
                   speech: "全てにヒットしませんでした"
             }
