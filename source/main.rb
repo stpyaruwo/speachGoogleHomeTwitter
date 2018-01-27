@@ -19,7 +19,6 @@ class Main < Sinatra::Base
       set :postdialog, Hash.new
     end
 
-
     #postのテスト②
       get '/' do
         "Hello"
@@ -47,16 +46,25 @@ class Main < Sinatra::Base
         intent = obj["result"]["parameters"]["intent"]
 
         case intent
+        #会話内容の確認
         when "callme" then
             settings.postdialog = {
                   speech: "#{obj["result"]["parameters"]["keyword"]}とおっしゃいましたね!"
             }
+        #webhookの動作確認
         when "webhook" then
             t = Time.new
             settings.postdialog = {
                   speech: "#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております。あつしさん!"
             }
+
+        when "tweetread" then
+          #ツイートの取得件数
+              tweets_num = obj["result"]["parameters"]["number"]
+          #ホームラインラインから、指定された数字まで、取得する
+              settings.postdialog  = settings.twitterread.readtweet(tweets_num)
         else
+
             settings.postdialog = {
                   speech: "全てにヒットしませんでした"
             }
@@ -64,12 +72,6 @@ class Main < Sinatra::Base
 
         #③DialogFlowに返す
         return settings.postdialog.to_json
-      end
-
-      #Twitterのテスト
-      get '/twitterTest' do
-        @read = settings.twitterread.readtweet
-        erb :readtwitter
       end
 
       run!
