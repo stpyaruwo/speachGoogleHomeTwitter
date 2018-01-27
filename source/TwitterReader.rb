@@ -18,13 +18,14 @@ module TwitterRead
       def readtweet(tweets_num)
           #tweetsに数字が入っているかチェックする
 
-          if tweets_num != nil
+          if tweets_num =~ /^[0-9]+$/
               #ツイートを配列で受け取る
               tweets = @client.home_timeline( { count: tweets_num} )
               says = "はい！、#{tweets.count}件分のツイートを呼び込みます！"
 
+              #http([s]|):\/\/[\wW\/:%#\$&\?\(\)~\.=\+\-]* =< httpだけ削除する
               tweets.each_with_index do |tweet,count|
-                says = says + "#{count + 1} 件目は#{tweet.user.name}が、#{tweet.full_text}と呟いております。"
+                says = says + "#{count + 1} 件目は#{tweet.user.name}が、#{trim_http(tweet.full_text)}と呟いております。"
               end
 
               @postdialog = {
@@ -36,11 +37,13 @@ module TwitterRead
                     speech:"すいません。失敗しました。"
               }
           end
-          #@postdialog = {
-          #    speech: "認証OKです!"
-          #}
-
           return @postdialog
+      end
+
+      #httpが書かれているurlを削除する
+      def trim_http(url)
+          url = url.gsub(/http([s]|):\/\/[\wW\/:%#\$&\?\(\)~\.=\+\-]+/, "")
+          return url
       end
   end
 end
