@@ -19,6 +19,7 @@ module TwitterRead
           #tweetsに数字が入っているかチェックする
              tweets_num = tweets_num.to_i
 
+            #型チェック
           if tweets_num.kind_of?(Integer)
               #ツイートを配列で受け取る
               tweets = @client.home_timeline( { count: tweets_num} )
