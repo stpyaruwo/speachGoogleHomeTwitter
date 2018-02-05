@@ -4,7 +4,6 @@ require "twitter"
 
 module Webhook
    class Superwebhook
-
      #グーグルが話す内容について記述する
       def initialize()
           @speechtoken = { speech: "" }
@@ -15,7 +14,6 @@ module Webhook
               config.access_token_secret = 'zxUKm4W5DiJHkLA5CdOdXS83789hOVUWxJtnqG9hCoaU3'
           end
       end
-
      #mainに返すHashデータを定義する
       def speech_voice(says)
         @speechtoken[:speech] = says
@@ -23,7 +21,9 @@ module Webhook
 
       #httpのデータを削除する
       def trim_http(url)
-          url = url.gsub(/http([s]|):\/\/[\wW\/:%#\$&\?\(\)~\.=\+\-]+/, "")
+          #url = url.gsub(/http([s]|):\/\/[\wW\/:%#\$&\?\(\)~\.=\+\-]+/, "")
+          url = url.gsub(%r{https?://[\w_.!*\/')(-]+}, "")
+
           return url
       end
       #override
@@ -32,17 +32,25 @@ module Webhook
       end
    end
 
+   #言った言葉を読み上げる
    class Callme < Superwebhook
-     #Stringで渡された文字を読み上げる
-     def input(says)
-        speech_voice(says + "とおっしゃいましたね!")
-        return @speechtoken
-     end
-
+      def input(says)
+         speech_voice(says + "とおっしゃいましたね!")
+         return @speechtoken
+      end
    end
 
-   class Readtwitter_homeline < Superwebhook
+   #webhookの動作検証
+   class  My_webhook  < Superwebhook
+      def input
+         t = Time.new
+         speech_voice("#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております。あつしさん")
+         return @speechtoken
+      end
+   end
 
+  #ホームラインから、ツイートの情報を読み込む
+   class Twitter_homeline < Superwebhook
      #読み込むツイート数を決める
       def input(tweets_num)
          tweets_num = tweets_num.to_i
@@ -59,11 +67,18 @@ module Webhook
         else
             speech_voice("すいません。失敗しました。")
         end
-
         return @speechtoken
       end
-
-
    end
+   
+  #呟く
+   class Twitter_tweet < Superwebhook
+      def input(says)
+          #呟く
+          @client.update("#{says}")
+          speech_voice("#{says}と呟きました。")
+          return @speechtoken
+      end
+    end
 
 end

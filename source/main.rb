@@ -35,18 +35,20 @@ class Main < Sinatra::Base
                case intent
                when "callme" then
                   settings.postdialog =  Callme.new().input("#{obj["result"]["parameters"]["keyword"]}")
+
                #webhookの動作確認
                when "webhook" then
-                   t = Time.new
-
-                   settings.postdialog = speechhome("#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております。あつしさん!")
+                   settings.postdialog = My_webhook.new().input
 
                when "tweetread" then
-                 #ツイートの取得件数
+                 #ツイートの取得件数s
                      tweets_num = obj["result"]["parameters"]["number"]
                  #ホームラインラインから、指定された数字まで、取得する
-                     #settings.postdialog  = settings.twitterread.readtweet(tweets_num)
-                     settings.postdialog = Readtwitter_homeline.new().input(tweets_num)
+                     settings.postdialog = Twitter_homeline.new().input(tweets_num)
+               when "twitter_tweet" then
+                 #呟く
+                     tweet = obj["result"]["parameters"]["tweet"]
+                     settings.postdialog = Twitter_tweet.new().input("#{tweet}")
                else
                    settings.postdialog = {
                          speech: "全てにヒットしませんでした"
