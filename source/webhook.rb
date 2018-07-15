@@ -1,19 +1,17 @@
 require "twitter"
 require "oauth"
 require "json"
-#post dialogを受け取る親クラス
-#処理をintentの処置を起票する
 
 module Webhook
    class Superwebhook
-
-      def initialize()
+     def initialize()
           @speechtoken = { speech: "" }
+          #注意箇所　絶対keyを乗せてはいけない　
           @client = Twitter::REST::Client.new do |config|
-              config.consumer_key         = 'p0oXKXPpcYLKUvTiKJ0gOznfi'
-              config.consumer_secret      = '80PePGdetsgofHQOO2bdyGk7TSvIvxoWNItDhg1Fe5ZXf1VcFU'
-              config.access_token            = '2504606953-T5yUJQnUcqsEYtvxWyUt2vZFZIrHSsob0JwEUyl'
-              config.access_token_secret = 'zxUKm4W5DiJHkLA5CdOdXS83789hOVUWxJtnqG9hCoaU3'
+            config.consumer_key         = File.open('env/consumer_key').read.chomp
+            config.consumer_secret      = File.open('env/consumer_secret').read.chomp
+            config.access_token         = File.open('env/access_token').read.chomp
+            config.access_token_secret  = File.open('env/access_token_secret').read.chomp
           end
 
           consumer = OAuth::Consumer.new(
@@ -21,7 +19,7 @@ module Webhook
             @client.consumer_secret,
             site:'https://api.twitter.com/'
           )
-          @endpoint = OAuth::AccessToken.new(consumer , @client.access_token , @client.access_token_secret)
+          @endpoint = OAuth::AccessToken.new(consumer, @client.access_token, @client.access_token_secret)
 
       end
 
@@ -35,7 +33,6 @@ module Webhook
 
       #httpのデータを削除する
       def trim_http(url)
-          #url = url.gsub(/http([s]|):\/\/[\wW\/:%#\$&\?\(\)~\.=\+\-]+/, "")
           url = url.gsub(%r{https?://[\w_.!*\/')(-]+}, "")
           return url
       end
@@ -47,11 +44,9 @@ module Webhook
               return false
             end
       end
-
-
    end
 
-   #言った言葉を読み上げる
+   #言葉を読み上げる
    class Callme < Superwebhook
       def input(says)
           speech_voice(says + "とおっしゃいましたね!")
@@ -63,7 +58,7 @@ module Webhook
    class  My_webhook  < Superwebhook
       def input
          t = Time.new
-         speech_voice("#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております。あつしさん")
+         speech_voice("#{t.month}月#{t.day}日の#{t.hour}時#{t.min}分現在は正常に稼働しております")
          return @speechtoken
       end
    end
@@ -111,9 +106,9 @@ module Webhook
         if tweets.kind_of?(Integer) && max_tweet(tweets, 30)
           response = @endpoint.get("https://api.twitter.com/1.1/trends/place.json?id=23424856")
           result = JSON.parse(response.body)
-          says = "はい！#{tweets}件分のトレンドを読み込みます"
+          says = "はい！#{tweets}件分のトレンドを読み込みます。  "
               0.upto(tweets - 1) do |count|
-                  says =  says + "#{count + 1}件目は、 #{result[0]["trends"][count]["name"]}です"
+                  says =  says + "#{count + 1}件目は、 #{result[0]["trends"][count]["name"]}です。 "
               end
            speech_voice(says)
 
